@@ -29,9 +29,9 @@ public final class Constants {
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
     // Chassis configuration
-    public static final double kTrackWidth = Units.inchesToMeters(26.5);
+    public static final double kTrackWidth = Units.inchesToMeters(24.5);
     // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = Units.inchesToMeters(26.5);
+    public static final double kWheelBase = Units.inchesToMeters(23.5);
     // Distance between front and back wheels on robot
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2),
@@ -46,17 +46,59 @@ public final class Constants {
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
     // SPARK MAX CAN IDs
-    public static final int kFrontLeftDrivingCanId = 11;
-    public static final int kRearLeftDrivingCanId = 13;
-    public static final int kFrontRightDrivingCanId = 15;
-    public static final int kRearRightDrivingCanId = 17;
+    public static final int kFrontLeftDrivingCanId = 9;
+    public static final int kRearLeftDrivingCanId = 8;
+    public static final int kFrontRightDrivingCanId = 6;
+    public static final int kRearRightDrivingCanId = 7;
 
-    public static final int kFrontLeftTurningCanId = 10;
-    public static final int kRearLeftTurningCanId = 12;
-    public static final int kFrontRightTurningCanId = 14;
-    public static final int kRearRightTurningCanId = 16;
+    public static final int kFrontLeftTurningCanId = 5;
+    public static final int kRearLeftTurningCanId = 4;
+    public static final int kFrontRightTurningCanId = 2;
+    public static final int kRearRightTurningCanId = 3;
 
     public static final boolean kGyroReversed = false;
+  }
+
+    public static final class IntakeConstants
+  {
+    // SPARK MAX CAN ID
+    public static final int kLeftIntakeMotorCanId = 13;
+    public static final int kRightIntakeMotorCanId = 15;
+
+    public static final double kLeftIntakeMotorCurrentLimit = 40;
+    public static final double kRightIntakeMotorCurrentLimit = 40;
+
+    public static final double kLeftIntakeInSpeed = -0.5;
+    public static final double kRightIntakeInSpeed = 0.5;
+    public static final double kLeftIntakeOutSpeed = 0.5;
+    public static final double kRightIntakeOutSpeed = -0.5;
+  }
+
+    public final class ClimberConstants {
+    public static final int kClimberMotorCanId = 14;
+    public static final double kClimberMotorCurrentLimit = 40;
+    public static double kClimberOnSpeed = 0.5;
+    public static double kClimberOffSpeed = -0.5;
+  }
+
+  public static final class ShootingConstants {
+
+    public static double preSpinDelay = 0.25;
+  }
+
+      public static final class FeederConstants {
+    public static final int kFeederMotorCanId = 12;
+    public static final double kFeederMotorCurrentLimit = 40;
+    public static double kFeederFowardSpeed = 0.5;
+    public static double kFeederReverseSpeed = -0.5;
+    }
+
+      public final class OperatorConstants
+  {
+    // USB port on the Driver Station that the controllers are plugged into
+    public static final int kDriverControllerPort = 0;
+    public static final int kOperatorControllerPort = 1;
+    public static final double kDriveDeadband = 0.05;
   }
 
   public static final class ModuleConstants {

@@ -18,13 +18,27 @@ import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.ShootingConstants;
+import frc.robot.Commands.ClimbingOff;
+import frc.robot.Commands.ClimbingOn;
+import frc.robot.Commands.Feeder;
+import frc.robot.Commands.Intake;
+import frc.robot.Commands.Outtake;
+import frc.robot.Commands.Shooting;
+import frc.robot.Commands.SpinUp;
+import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.FeederSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
+
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -35,9 +49,13 @@ import java.util.List;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-
+  private final IntakeSubsystem m_Intake = new IntakeSubsystem();
+  private final FeederSubsystem m_Feeder = new FeederSubsystem();
+  private final ClimbingSubsystem m_Climbing = new ClimbingSubsystem();
+  
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -78,6 +96,16 @@ public class RobotContainer {
         .onTrue(new InstantCommand(
             () -> m_robotDrive.zeroHeading(),
             m_robotDrive));
+
+
+    operatorController.leftTrigger().whileTrue(new Intake(m_Intake, m_Feeder));
+    operatorController.b().whileTrue(new Shooting(m_Intake, m_Feeder));
+    operatorController.leftBumper().whileTrue(new Outtake(m_Intake, m_Feeder));
+    operatorController.x().whileTrue(new ClimbingOn(m_Climbing));
+    operatorController.y().whileTrue(new ClimbingOff(m_Climbing));
+    operatorController.rightTrigger().whileTrue(new SpinUp(m_Intake)
+        .withTimeout(ShootingConstants.preSpinDelay).andThen(new Shooting(m_Intake, m_Feeder)));
+    
   }
 
   /**
