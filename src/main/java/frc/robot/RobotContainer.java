@@ -100,11 +100,11 @@ public class RobotContainer {
 
     operatorController.leftTrigger().whileTrue(new Intake(m_Intake, m_Feeder));
     operatorController.b().whileTrue(new Shooting(m_Intake, m_Feeder));
-    operatorController.leftBumper().whileTrue(new Outtake(m_Intake, m_Feeder));
-    operatorController.x().whileTrue(new ClimbingOn(m_Climbing));
-    operatorController.y().whileTrue(new ClimbingOff(m_Climbing));
-    operatorController.rightTrigger().whileTrue(new SpinUp(m_Intake)
-        .withTimeout(ShootingConstants.preSpinDelay).andThen(new Shooting(m_Intake, m_Feeder)));
+    // operatorController.leftBumper().whileTrue(new Outtake(m_Intake, m_Feeder));
+    // operatorController.x().whileTrue(new ClimbingOn(m_Climbing));
+    // operatorController.y().whileTrue(new ClimbingOff(m_Climbing));
+     operatorController.rightTrigger().whileTrue(new SpinUp(m_Intake)
+         .withTimeout(ShootingConstants.preSpinDelay).andThen(new Shooting(m_Intake, m_Feeder))); //shooting
     
   }
 

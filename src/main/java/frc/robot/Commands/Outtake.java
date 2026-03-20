@@ -22,6 +22,7 @@ public class Outtake extends Command{
     public void initialize() {
         m_IntakeSubsystem.setIntakeMotors(IntakeConstants.kLeftIntakeOutSpeed);
         m_FeederSubsystem.setFeederMotors(FeederConstants.kFeederReverseSpeed);
+        // we have yet to add right motor for outtake; only using left for testing purposes
     }
 
     @Override

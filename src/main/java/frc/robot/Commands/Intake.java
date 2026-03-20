@@ -22,10 +22,8 @@ public class Intake extends Command {
   public void initialize() {
     m_IntakeSubsystem.setIntakeMotors(IntakeConstants.kLeftIntakeInSpeed);
     m_FeederSubsystem.setFeederMotors(FeederConstants.kFeederFowardSpeed);
-    
-    
+    // we have yet to add right motor for intake; only using left for testing purposes
   }
-
   @Override
   public void execute() {
  

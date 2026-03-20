@@ -2,6 +2,7 @@ package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.ShootingConstants;
 import frc.robot.subsystems.IntakeSubsystem;
 
 public class SpinUp extends Command {
@@ -15,7 +16,7 @@ public class SpinUp extends Command {
 
   @Override
   public void initialize() {
-    m_IntakeSubsystem.setIntakeMotors(IntakeConstants.kLeftIntakeInSpeed);
+    m_IntakeSubsystem.setIntakeMotors(ShootingConstants.kShooterSpeed);
     
     
   }
