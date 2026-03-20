@@ -16,8 +16,7 @@ public class SpinUp extends Command {
 
   @Override
   public void initialize() {
-    m_IntakeSubsystem.setIntakeMotors(ShootingConstants.kShooterSpeed);
-    
+    m_IntakeSubsystem.setIntakeMotors(ShootingConstants.FeederSpeed);
     
   }
 
