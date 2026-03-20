@@ -68,10 +68,10 @@ public final class Constants {
     public static final double kLeftIntakeMotorCurrentLimit = 40;
     public static final double kRightIntakeMotorCurrentLimit = 40;
 
-    public static final double kLeftIntakeInSpeed = 0.5;
-    public static final double kRightIntakeInSpeed = 0.5;
-    public static final double kLeftIntakeOutSpeed = -0.5;
-    public static final double kRightIntakeOutSpeed = -0.5;
+    public static final double kLeftIntakeInSpeed = -0.9;
+    public static final double kRightIntakeInSpeed = 0.9;
+    public static final double kLeftIntakeOutSpeed = 0.85;
+    public static final double kRightIntakeOutSpeed = -0.85;
   }
 
     public final class ClimberConstants {
@@ -83,9 +83,9 @@ public final class Constants {
 
   public static final class ShootingConstants {
 
-    public static double preSpinDelay = 0.25;
-    public static double kShooterSpeed = 1;
-
+    public static double preSpinDelay = 0.85;
+    public static double ShootingSpeed = 0.9;
+    public static double FeederSpeed = 0.78;
   }
 
       public static final class FeederConstants {

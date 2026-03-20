@@ -1,4 +1,4 @@
-package frc.robot.Commands;
+ package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.FeederConstants;
@@ -6,7 +6,6 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShootingConstants;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import edu.wpi.first.math.controller.PIDController;
 
 public class Shooting extends Command {
     IntakeSubsystem m_IntakeSubsystem;
@@ -23,7 +22,7 @@ public class Shooting extends Command {
 
   @Override
   public void initialize() {
-    m_IntakeSubsystem.setIntakeMotors(ShootingConstants.kShooterSpeed);
+    m_IntakeSubsystem.setIntakeMotors(ShootingConstants.ShootingSpeed);
     m_FeederSubsystem.setFeederMotors(FeederConstants.kFeederReverseSpeed);
     
   }
