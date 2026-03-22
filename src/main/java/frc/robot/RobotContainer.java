@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShootingConstants;
 import frc.robot.Commands.ClimbingOff;
@@ -54,7 +53,7 @@ public class RobotContainer {
   private final ClimbingSubsystem m_Climbing = new ClimbingSubsystem();
   
   // The driver's controller
-  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  XboxController m_driverController = new XboxController(OperatorConstants.kDriverControllerPort);
   private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
 
   /**
@@ -70,9 +69,9 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftY(), OperatorConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX(), OperatorConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getRightX(), OperatorConstants.kDriveDeadband),
                 true),
             m_robotDrive));
   }
@@ -100,7 +99,8 @@ public class RobotContainer {
 
     operatorController.leftTrigger().whileTrue(new Intake(m_Intake, m_Feeder));
     operatorController.b().whileTrue(new Shooting(m_Intake, m_Feeder));
-    // operatorController.leftBumper().whileTrue(new Outtake(m_Intake, m_Feeder));
+    operatorController.leftBumper().whileTrue(new Outtake(m_Intake, m_Feeder));
+    operatorController.rightBumper().whileTrue(new Feeder(m_Feeder));
     // operatorController.x().whileTrue(new ClimbingOn(m_Climbing));
     // operatorController.y().whileTrue(new ClimbingOff(m_Climbing));
      operatorController.rightTrigger().whileTrue(new SpinUp(m_Intake)
