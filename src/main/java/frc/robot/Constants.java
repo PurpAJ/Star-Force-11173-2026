@@ -59,44 +59,30 @@ public final class Constants {
     public static final boolean kGyroReversed = false;
   }
 
-    public static final class IntakeConstants
-  {
+  public static final class IntakeConstants {
     // SPARK MAX CAN ID
     public static final int kLeftIntakeMotorCanId = 13;
     public static final int kRightIntakeMotorCanId = 15;
 
-    public static final double kLeftIntakeMotorCurrentLimit = 40;
-    public static final double kRightIntakeMotorCurrentLimit = 40;
+    public static final double kIntakeVelocity = 450;
+    public static final double kShootTowerVelocity = 510;
+    public static final double kFeedNeutralVelocity = 630;
 
-    public static final double kLeftIntakeInSpeed = -0.9;
-    public static final double kRightIntakeInSpeed = 0.9;
-    public static final double kLeftIntakeOutSpeed = 0.85;
-    public static final double kRightIntakeOutSpeed = -0.85;
+    public static final double kIntakeP = 0.01;
+    public static final double kIntakeI = 0.0;
+    public static final double kIntakeD = 0.0005;
+    public static final double kIntakeS = 0.175;
+    public static final double kIntakeV = 0.017;
   }
 
-    public final class ClimberConstants {
-    public static final int kClimberMotorCanId = 14;
-    public static final double kClimberMotorCurrentLimit = 40;
-    public static double kClimberOnSpeed = 0.5;
-    public static double kClimberOffSpeed = -0.5;
-  }
-
-  public static final class ShootingConstants {
-
-    public static double preSpinDelay = 0.85;
-    public static double ShootingSpeed = 0.9;
-    public static double FeederSpeed = 0.78;
-  }
-
-      public static final class FeederConstants {
+  public static final class FeederConstants {
     public static final int kFeederMotorCanId = 12;
     public static final double kFeederMotorCurrentLimit = 40;
     public static double kFeederFowardSpeed = 0.5;
     public static double kFeederReverseSpeed = -0.5;
-    }
+  }
 
-      public final class OperatorConstants
-  {
+  public final class OperatorConstants {
     // USB port on the Driver Station that the controllers are plugged into
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
