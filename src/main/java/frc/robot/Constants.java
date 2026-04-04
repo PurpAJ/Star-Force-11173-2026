@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.pathplanner.lib.config.RobotConfig;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -53,6 +55,8 @@ public final class Constants {
     public static final boolean kGyroReversed = false;
   }
 
+  
+
   private static Pose2d makeTarget(double x, double y) {
     return new Pose2d(new Translation2d(x, y), Rotation2d.kZero);
   }
@@ -88,8 +92,8 @@ public final class Constants {
     public static final int kRightIntakeMotorCanId = 15;
 
     public static final double kIntakeVelocity = 450;
-    public static final double kShootTowerVelocity = 515;
-    public static final double kFeedNeutralVelocity = 600;
+    public static final double kShootTowerVelocity = 510;
+    public static final double kFeedNeutralVelocity = 550;
 
     public static final double kIntakeP = 0.02;
     public static final double kIntakeI = 0.0;
@@ -115,7 +119,7 @@ public final class Constants {
   }
 
   // ---------------------------------------------------------
-  // ⚙️ Module Constants (MAXSwerve)
+  //  Module Constants (MAXSwerve)
   // ---------------------------------------------------------
   public static final class ModuleConstants {
     public static final int kDrivingMotorPinionTeeth = 14;

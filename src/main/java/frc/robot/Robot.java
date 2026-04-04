@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -25,9 +28,27 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    CameraServer.startAutomaticCapture();
+    CommandScheduler.getInstance().run();
+    double matchTime = DriverStation.getMatchTime();
+    SmartDashboard.putNumber("Match Time", matchTime);
+    if (matchTime > 140) {
+      SmartDashboard.putNumber("Active Shift Time", matchTime - 140);
+    } else if (matchTime > 130) {
+      SmartDashboard.putNumber("Active Shift Time", matchTime - 130);
+    } else if (matchTime > 30) {
+      SmartDashboard.putNumber("Active Shift Time", ((matchTime - 30) % 25));
+    } else {
+      SmartDashboard.putNumber("Active Shift Time", matchTime);
+    }
+    //put camera in smartdashboard
+    SmartDashboard.putNumber("Camera", 0);
+    //put limelight camera in smartdashboard
+    SmartDashboard.putNumber("Limelight Camera", 1);
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
   }
 
   /**

@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import java.io.File;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.FollowPathCommand;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -15,8 +20,8 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
@@ -35,6 +40,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import java.lang.management.OperatingSystemMXBean;
+import java.nio.file.Path;
 import java.util.List;
 
 /*
@@ -48,6 +54,9 @@ public class RobotContainer {
         private final DriveSubsystem m_robotDrive = new DriveSubsystem();
         private final IntakeSubsystem m_Intake = new IntakeSubsystem();
         private final FeederSubsystem m_Feeder = new FeederSubsystem();
+
+        private final SendableChooser<Command> autoChooser;
+
 
         // The driver's controller
         CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -83,6 +92,15 @@ public class RobotContainer {
                                                 -MathUtil.applyDeadband(m_driverController.getLeftX(),
                                                                 OperatorConstants.kDriveDeadband)),
                                 m_robotDrive));
+        
+
+        registerNamedCommands();
+        autoChooser = new SendableChooser<>();
+        autoChooser.addOption("Center Auto",AutoBuilder.buildAuto("middleAuto"));
+        autoChooser.addOption("Middle Shoot", middleAuto());
+        autoChooser.setDefaultOption("Do Nothing", new InstantCommand());
+        SmartDashboard.putData("Auto Chooser", autoChooser);
+
 
         }
 
@@ -114,6 +132,24 @@ public class RobotContainer {
                                 .andThen(new Shooting(m_Intake, m_Feeder, IntakeConstants.kShootTowerVelocity))); // shooting
                 m_Intake.setDefaultCommand(new RunCommand(() -> m_Intake.setIntakeMotors(0), m_Intake));
                 m_Feeder.setDefaultCommand(new RunCommand(() -> m_Feeder.setFeederMotors(0), m_Feeder));
+        }
+
+
+        public void registerNamedCommands() {
+                NamedCommands.registerCommand("Shoot", new SpinUp(m_Intake, IntakeConstants.kShootTowerVelocity)
+                                .andThen(new Shooting(m_Intake, m_Feeder, IntakeConstants.kShootTowerVelocity)));
+
+
+        }
+
+        public Command middleAuto() {
+
+                return new InstantCommand(
+                                () -> m_robotDrive.zeroHeading(),
+                                m_robotDrive)
+                .withTimeout(1)
+                .andThen(AutoBuilder.buildAuto("middleAuto"))
+                ;
         }
 
         /**
@@ -160,7 +196,7 @@ public class RobotContainer {
 
                 // // Run path following command, then stop at the end.
                 // return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
-                return new InstantCommand();
+                return AutoBuilder.buildAuto("middleAuto");
         }
 }
 // 67
