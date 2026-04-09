@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meter;
+
 import java.io.File;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -76,9 +78,9 @@ public class RobotContainer {
                                 // Turning is controlled by the X axis of the right stick.
                                 new RunCommand(
                                                 () -> m_robotDrive.drive(
-                                                                -MathUtil.applyDeadband(m_driverController.getLeftY(),
+                                                                MathUtil.applyDeadband(m_driverController.getLeftY(),
                                                                                 OperatorConstants.kDriveDeadband),
-                                                                -MathUtil.applyDeadband(m_driverController.getLeftX(),
+                                                                MathUtil.applyDeadband(m_driverController.getLeftX(),
                                                                                 OperatorConstants.kDriveDeadband),
                                                                 -MathUtil.applyDeadband(m_driverController.getRightX(),
                                                                                 OperatorConstants.kDriveDeadband),
@@ -96,8 +98,9 @@ public class RobotContainer {
 
         registerNamedCommands();
         autoChooser = new SendableChooser<>();
-        autoChooser.addOption("Center Auto",AutoBuilder.buildAuto("middleAuto"));
-        autoChooser.addOption("Middle Shoot", middleAuto());
+        autoChooser.addOption("Center", MiddleAuto());
+        autoChooser.addOption("Left", AutoBuilder.buildAuto("Left Neutral"));
+        autoChooser.addOption("Right", AutoBuilder.buildAuto("Right Neutral"));
         autoChooser.setDefaultOption("Do Nothing", new InstantCommand());
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -138,18 +141,27 @@ public class RobotContainer {
         public void registerNamedCommands() {
                 NamedCommands.registerCommand("Shoot", new SpinUp(m_Intake, IntakeConstants.kShootTowerVelocity)
                                 .andThen(new Shooting(m_Intake, m_Feeder, IntakeConstants.kShootTowerVelocity)));
-
-
+// named command for shooter to stop
+                NamedCommands.registerCommand("StopShooting", new InstantCommand(() -> {
+                        m_Intake.setIntakeMotors(0);
+                        m_Feeder.setFeederMotors(0);
+                }, m_Intake, m_Feeder));
         }
 
-        public Command middleAuto() {
-
+        public Command RedMiddleAuto() {
                 return new InstantCommand(
-                                () -> m_robotDrive.zeroHeading(),
+                                () -> m_robotDrive.resetOdometry(
+                                new Pose2d(new Translation2d(Meter.of(12.997), 
+                                Meter.of(4.019)), Rotation2d.fromDegrees(-180))),
                                 m_robotDrive)
                 .withTimeout(1)
-                .andThen(AutoBuilder.buildAuto("middleAuto"))
+                .andThen(AutoBuilder.buildAuto("RedMiddleAuto"))
                 ;
+        }
+
+              public Command MiddleAuto() {
+                 return       AutoBuilder.buildAuto("Middle Shoot");
+                
         }
 
         /**
@@ -196,7 +208,7 @@ public class RobotContainer {
 
                 // // Run path following command, then stop at the end.
                 // return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
-                return AutoBuilder.buildAuto("middleAuto");
+                return autoChooser.getSelected();
         }
 }
 // 67

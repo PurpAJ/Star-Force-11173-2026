@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "middleAuto "
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
+            "pathName": "Left Disrupt"
           }
         }
       ]

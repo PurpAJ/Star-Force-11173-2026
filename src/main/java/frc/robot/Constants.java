@@ -1,6 +1,5 @@
 package frc.robot;
 
-import com.pathplanner.lib.config.RobotConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,7 +16,7 @@ public final class Constants {
   public static final class DriveConstants {
 
     // Maximum allowed speeds (not the motor's physical max)
-    public static final double kMaxSpeedMetersPerSecond = 4.8;
+    public static final double kMaxSpeedMetersPerSecond = 5.4;
     public static final double kMaxAngularSpeed = 2 * Math.PI; // rad/sec
 
     // Robot geometry
@@ -92,7 +91,7 @@ public final class Constants {
     public static final int kRightIntakeMotorCanId = 15;
 
     public static final double kIntakeVelocity = 450;
-    public static final double kShootTowerVelocity = 510;
+    public static final double kShootTowerVelocity = 480;
     public static final double kFeedNeutralVelocity = 550;
 
     public static final double kIntakeP = 0.02;
@@ -105,8 +104,8 @@ public final class Constants {
   public static final class FeederConstants {
     public static final int kFeederMotorCanId = 12;
     public static final double kFeederMotorCurrentLimit = 40;
-    public static double kFeederFowardSpeed = 0.5;
-    public static double kFeederReverseSpeed = -0.5;
+    public static double kFeederFowardSpeed = 0.6;
+    public static double kFeederReverseSpeed = -0.6;
   }
 
   // ---------------------------------------------------------
