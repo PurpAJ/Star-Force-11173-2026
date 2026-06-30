@@ -64,6 +64,7 @@ public class RobotContainer {
         CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
         private final CommandXboxController operatorController = new CommandXboxController(
                         OperatorConstants.kOperatorControllerPort);
+        //CommandXboxController m_AbsoluController = new CommandXboxController(OperatorConstants.kAbsoluteControllerPort);
 
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -85,6 +86,13 @@ public class RobotContainer {
                                                                 -MathUtil.applyDeadband(m_driverController.getRightX(),
                                                                                 OperatorConstants.kDriveDeadband),
                                                                 true),
+                                                                //   MathUtil.applyDeadband(m_AbsoluController.getLeftY(),
+                                                                //                 OperatorConstants.kDriveDeadband),
+                                                                // MathUtil.applyDeadband(m_AbsoluController.getLeftX(),
+                                                                //                 OperatorConstants.kDriveDeadband),
+                                                                // -MathUtil.applyDeadband(m_AbsoluController.getRightX(),
+                                                                //                 OperatorConstants.kDriveDeadband),
+                                                                // true),
                                                 m_robotDrive));
                                                 
                 m_driverController.leftTrigger(0.25).whileTrue(new RunCommand(
@@ -98,9 +106,17 @@ public class RobotContainer {
 
         registerNamedCommands();
         autoChooser = new SendableChooser<>();
-        autoChooser.addOption("Center", MiddleAuto());
-        autoChooser.addOption("Left", AutoBuilder.buildAuto("Left Neutral"));
-        autoChooser.addOption("Right", AutoBuilder.buildAuto("Right Neutral"));
+        autoChooser.addOption("Center depo", MiddleAuto());
+        autoChooser.addOption("Left neutral", AutoBuilder.buildAuto("Left Neutral"));
+        autoChooser.addOption("Right neutral", AutoBuilder.buildAuto("Right Neutral"));
+        autoChooser.addOption("Middle shoot", AutoBuilder.buildAuto("Middle"));
+        autoChooser.addOption("Left", AutoBuilder.buildAuto("Left"));
+        autoChooser.addOption("Right", AutoBuilder.buildAuto("Right"));
+        autoChooser.addOption("Test", AutoBuilder.buildAuto("Test"));
+        autoChooser.addOption("Right Intake", AutoBuilder.buildAuto("Right Intake"));
+        autoChooser.addOption("Left Intake", AutoBuilder.buildAuto("Left Intake"));
+        autoChooser.addOption("Middle depo", AutoBuilder.buildAuto("Middle Shoot in"));
+        autoChooser.addOption("Middle sepo shoot", AutoBuilder.buildAuto("Middle Shoot in shoot"));
         autoChooser.setDefaultOption("Do Nothing", new InstantCommand());
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -117,12 +133,14 @@ public class RobotContainer {
          * {@link JoystickButton}.
          */
         private void configureButtonBindings() {
-                m_driverController.rightBumper().whileTrue(new RunCommand(
+                m_driverController.rightTrigger().whileTrue(new RunCommand(
                                 () -> m_robotDrive.setX(),
                                 m_robotDrive));
                 m_driverController.start().onTrue(new InstantCommand(
                                 () -> m_robotDrive.zeroHeading(),
                                 m_robotDrive));
+
+                
 
                 operatorController.leftTrigger().whileTrue(new Intake(m_Intake, m_Feeder));
                 // operatorController.b().whileTrue(new Shooting(m_Intake, m_Feeder));
@@ -135,6 +153,7 @@ public class RobotContainer {
                                 .andThen(new Shooting(m_Intake, m_Feeder, IntakeConstants.kShootTowerVelocity))); // shooting
                 m_Intake.setDefaultCommand(new RunCommand(() -> m_Intake.setIntakeMotors(0), m_Intake));
                 m_Feeder.setDefaultCommand(new RunCommand(() -> m_Feeder.setFeederMotors(0), m_Feeder));
+                
         }
 
 
@@ -142,24 +161,28 @@ public class RobotContainer {
                 NamedCommands.registerCommand("Shoot", new SpinUp(m_Intake, IntakeConstants.kShootTowerVelocity)
                                 .andThen(new Shooting(m_Intake, m_Feeder, IntakeConstants.kShootTowerVelocity)));
 // named command for shooter to stop
-                NamedCommands.registerCommand("StopShooting", new InstantCommand(() -> {
+                NamedCommands.registerCommand("Stop Shooting", new InstantCommand(() -> {
+                        m_Intake.setIntakeMotors(0);
+                        m_Feeder.setFeederMotors(0);
+                }, m_Intake, m_Feeder));
+
+                NamedCommands.registerCommand("Outtake", new Outtake(m_Intake, m_Feeder));
+                NamedCommands.registerCommand("Stop Outtake", new InstantCommand(() -> {
+                        m_Intake.setIntakeMotors(0);
+                        m_Feeder.setFeederMotors(0);
+                }, m_Intake, m_Feeder));
+
+                NamedCommands.registerCommand("Intake", new Intake(m_Intake, m_Feeder));
+                NamedCommands.registerCommand("Stop Intake", new InstantCommand(() -> {
                         m_Intake.setIntakeMotors(0);
                         m_Feeder.setFeederMotors(0);
                 }, m_Intake, m_Feeder));
         }
 
-        public Command RedMiddleAuto() {
-                return new InstantCommand(
-                                () -> m_robotDrive.resetOdometry(
-                                new Pose2d(new Translation2d(Meter.of(12.997), 
-                                Meter.of(4.019)), Rotation2d.fromDegrees(-180))),
-                                m_robotDrive)
-                .withTimeout(1)
-                .andThen(AutoBuilder.buildAuto("RedMiddleAuto"))
-                ;
-        }
 
-              public Command MiddleAuto() {
+        
+
+        public Command MiddleAuto() {
                  return       AutoBuilder.buildAuto("Middle Shoot");
                 
         }

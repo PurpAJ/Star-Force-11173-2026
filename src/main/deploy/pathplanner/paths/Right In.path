@@ -12,36 +12,20 @@
         "y": 0.6520035778175304
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "book"
     },
     {
       "anchor": {
-        "x": 5.365652951699463,
+        "x": 5.667165492957747,
         "y": 0.6520035778175304
       },
       "prevControl": {
-        "x": 4.365652951699463,
-        "y": 0.6520035778175305
-      },
-      "nextControl": {
-        "x": 6.365652951699463,
+        "x": 6.1671654929577455,
         "y": 0.6520035778175304
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 7.815688729874777,
-        "y": 2.777531305903399
-      },
-      "prevControl": {
-        "x": 8.315688729874775,
-        "y": 2.777531305903399
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Right In (1)end"
     }
   ],
   "rotationTargets": [],
@@ -57,7 +41,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.05,
     "rotation": 180.0
   },
   "reversed": false,

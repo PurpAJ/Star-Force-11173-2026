@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5433802816901414,
-        "y": 4.041
+        "x": 1.305,
+        "y": 6.015070422535212
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.2933802816901414,
-        "y": 4.041
+        "x": 0.34971830985915564,
+        "y": 6.350404929577464
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "depo"
     },
     {
       "anchor": {
-        "x": 1.305,
-        "y": 4.041
+        "x": 0.07825704225352192,
+        "y": 6.318468309859155
       },
       "prevControl": {
-        "x": 1.055,
-        "y": 4.041
+        "x": 1.0203873239436627,
+        "y": 6.015070422535212
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 1.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -47,8 +47,8 @@
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 1.0,
-    "rotation": 179.73057562930885
+    "velocity": 0,
+    "rotation": 180.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
