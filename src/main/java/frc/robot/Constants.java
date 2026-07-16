@@ -23,6 +23,7 @@ public final class Constants {
     public static final double kTrackWidth = Units.inchesToMeters(24.5);
     public static final double kWheelBase = Units.inchesToMeters(23.5);
 
+    //swerve drive kinematics
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2), // Front Left
         new Translation2d(kWheelBase / 2, -kTrackWidth / 2), // Front Right
