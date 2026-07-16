@@ -17,22 +17,21 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.ADIS16470_IMU;
-import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.Targets;
-import frc.robot.subsystems.LimelightHelpers.PoseEstimate;
-import frc.robot.subsystems.Vision.VisionMeasurement;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.studica.frc.AHRS.NavXComType;
 import frc.robot.Constants.AimMode;
+import frc.robot.subsystems.Vision.VisionMeasurement;
+
+import edu.wpi.first.math.MathUtil;
 
 
 public class DriveSubsystem extends SubsystemBase {
@@ -64,11 +63,20 @@ public class DriveSubsystem extends SubsystemBase {
   private final Vision m_vision = new Vision("limelight");
 
   private final PIDController m_headingPID = new PIDController(
-    DriveConstants.kHeadingP, DriveConstants.kHeadingI, DriveConstants.kHeadingD);
+      DriveConstants.kHeadingP, DriveConstants.kHeadingI, DriveConstants.kHeadingD);
 
   private double m_targetDist = 0.0;
   private AimMode m_aimMode = AimMode.HUB;
   private Pose2d m_aimTarget = Pose2d.kZero;
+
+  // -------------------------
+  // 🔒 Heading Lock State
+  // -------------------------
+  private double m_lockedHeading = 0.0;
+  private boolean m_headingLocked = false;
+  private final PIDController headingLockPID = new PIDController(0.1, 0.0, 0.002);
+
+  private static final double kTxReacquireTolerance = 3.0;
 
   private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
       DriveConstants.kDriveKinematics,
@@ -80,7 +88,7 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
       },
       new Pose2d());
-  
+
   private final Field2d m_field = new Field2d();
 
   public DriveSubsystem() {
@@ -90,9 +98,7 @@ public class DriveSubsystem extends SubsystemBase {
     m_headingPID.enableContinuousInput(0, 360);
 
     pathplannerInit();
-
   }
-  
 
   private double getGyroAngle() {
     return -m_gyro.getAngle() % 360;
@@ -113,6 +119,30 @@ public class DriveSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("test", m_frontLeft.getPosition().distanceMeters);
 
+    SmartDashboard.putNumber("LL tv", NetworkTableInstance.getDefault()
+    .getTable("limelight")
+    .getEntry("tv")
+    .getDouble(-1));
+
+SmartDashboard.putNumber("LL tx", NetworkTableInstance.getDefault()
+    .getTable("limelight")
+    .getEntry("tx")
+    .getDouble(999));
+
+SmartDashboard.putNumber("LL ty", NetworkTableInstance.getDefault()
+    .getTable("limelight")
+    .getEntry("ty")
+    .getDouble(999));
+
+    SmartDashboard.putString("LL Keys", 
+    NetworkTableInstance.getDefault().getTable("limelight").getKeys().toString());
+
+    SmartDashboard.putString("LL Keys", 
+    NetworkTableInstance.getDefault().getTable("limelight").getKeys().toString());
+
+
+
+
     VisionMeasurement visionMeasurement = m_vision.consult(getGyroAngle(), m_gyro.getPitch(), m_gyro.getRoll());
 
     if (visionMeasurement.isReal()) {
@@ -124,6 +154,42 @@ public class DriveSubsystem extends SubsystemBase {
 
     calculateTargets();
   }
+
+  // -------------------------
+  // Limelight helpers
+  // -------------------------
+// Returns true if Limelight sees a target
+private boolean limelightHasTarget() {
+    return NetworkTableInstance.getDefault()
+        .getTable("limelight")
+        .getEntry("tv")
+        .getDouble(0) == 1;
+}
+
+// Returns horizontal offset (tx)
+private double getLimelightTx() {
+    return NetworkTableInstance.getDefault()
+        .getTable("limelight")
+        .getEntry("tx")
+        .getDouble(0);
+}
+
+// Returns vertical offset (ty)
+private double getLimelightTy() {
+    return NetworkTableInstance.getDefault()
+        .getTable("limelight")
+        .getEntry("ty")
+        .getDouble(0);
+}
+
+// Returns botpose array
+private double[] getLimelightBotPose() {
+    return NetworkTableInstance.getDefault()
+        .getTable("limelight")
+        .getEntry("botpose")
+        .getDoubleArray(new double[6]);
+}
+
 
   public void calculateTargets() {
     SmartDashboard.putData("Heading PID", m_headingPID);
@@ -165,7 +231,7 @@ public class DriveSubsystem extends SubsystemBase {
   public Pose2d getPose() {
     return m_poseEstimator.getEstimatedPosition();
   }
-  
+
   public ChassisSpeeds getChassisSpeeds() {
     return DriveConstants.kDriveKinematics.toChassisSpeeds(
         m_frontLeft.getState(),
@@ -173,8 +239,6 @@ public class DriveSubsystem extends SubsystemBase {
         m_rearLeft.getState(),
         m_rearRight.getState());
   }
-
-
 
   public void resetOdometry(Pose2d pose) {
     m_poseEstimator.resetPosition(
@@ -209,60 +273,112 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.setDesiredState(swerveModuleStates[3]);
   }
 
-   public void pathplannerInit() {
-     RobotConfig config = null;
-    try{
+  public void pathplannerInit() {
+    RobotConfig config = null;
+    try {
       config = RobotConfig.fromGUISettings();
     } catch (Exception e) {
-      // Handle exception as needed
       e.printStackTrace();
     }
 
-        AutoBuilder.configure(
-            this::getPose, // Robot pose supplier
-            this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-            this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            (speeds, feedforwards) -> drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(3, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(1.5, 0.0, 0.0) // Rotation PID constants
-            ),
-            config, // The robot configuration
-            () -> {
-              // Boolean supplier that controls when the path will be mirrored for the red alliance
-              // This will flip the path being followed to the red side of the field.
-              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-              var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
-            },
-            this // Reference to this subsystem to set requirements
-    );
-
-
-
-
-
-
-
+    AutoBuilder.configure(
+        this::getPose,
+        this::resetOdometry,
+        this::getChassisSpeeds,
+        (speeds, feedforwards) -> drive(
+            speeds.vxMetersPerSecond,
+            speeds.vyMetersPerSecond,
+            speeds.omegaRadiansPerSecond,
+            false),
+        new PPHolonomicDriveController(
+            new PIDConstants(3, 0.0, 0.0),
+            new PIDConstants(1.5, 0.0, 0.0)),
+        config,
+        () -> {
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this);
   }
 
+  // -------------------------
+  // Heading-locked drive
+  // -------------------------
+  public void updateHeadingLock() {
+    
+    double currentYaw = getGyroAngle();
+    double tx = getLimelightTx();
+
+    if (limelightHasTarget()) {
+      double visionHeading = currentYaw - tx;
+
+      if (!m_headingLocked) {
+        m_lockedHeading = visionHeading;
+        m_headingLocked = true;
+      } else if (Math.abs(tx) > kTxReacquireTolerance) {
+        m_lockedHeading = visionHeading;
+      }
+    }
+    // If no target, keep last locked heading
+  }
+
+  private double calculateHeadingLockOmega(double currentYaw, double lockedHeading) {
+    double error = MathUtil.inputModulus(lockedHeading - currentYaw, -180, 180);
+    double omega = headingLockPID.calculate(error, 0);
+    omega = MathUtil.clamp(omega, -2.5, 2.5);
+    return omega;
+}
+
+
+  public void driveHeadingLocked(double xSpeed, double ySpeed) {
+    updateHeadingLock();
+    
+
+    double currentYaw = getGyroAngle();
+    double omega = 0.0;
+
+    if (m_headingLocked) {
+        omega = calculateHeadingLockOmega(currentYaw, m_lockedHeading);
+    }
+
+    double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+    double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+
+    var states = DriveConstants.kDriveKinematics.toSwerveModuleStates(
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            xSpeedDelivered,
+            ySpeedDelivered,
+            omega,
+            Rotation2d.fromDegrees(getGyroAngle())));
+
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.kMaxSpeedMetersPerSecond);
+
+    m_frontLeft.setDesiredState(states[0]);
+    m_frontRight.setDesiredState(states[1]);
+    m_rearLeft.setDesiredState(states[2]);
+    m_rearRight.setDesiredState(states[3]);
+}
 
 
 
-
+  // -------------------------
+  // Existing auto-aim drive
+  // -------------------------
   public void driveTargetAligned(double xSpeed, double ySpeed) {
     Translation2d dist = m_aimTarget.getTranslation().minus(getPose().getTranslation());
     double headingDegrees = Units.radiansToDegrees(Math.atan2(dist.getY(), dist.getX()));
     double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
     double omegaDelivered = m_headingPID.calculate(getGyroAngle(), headingDegrees);
-    
+
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
-        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, omegaDelivered,
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            xSpeedDelivered,
+            ySpeedDelivered,
+            omegaDelivered,
             Rotation2d.fromDegrees(getGyroAngle())));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);

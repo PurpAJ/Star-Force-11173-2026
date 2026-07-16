@@ -46,9 +46,22 @@ public final class Constants {
     public static final int kFrontRightTurningCanId = 2;
     public static final int kRearRightTurningCanId = 3;
 
-    public static final double kHeadingP = 0.0;
+    // public static final int kFrontLeftDrivingCanId = 7;
+    // public static final int kRearLeftDrivingCanId = 6;
+    // public static final int kFrontRightDrivingCanId = 8;
+    // public static final int kRearRightDrivingCanId = 9;
+
+    // public static final int kFrontLeftTurningCanId = 3;
+    // public static final int kRearLeftTurningCanId = 2;
+    // public static final int kFrontRightTurningCanId = 4;
+    // public static final int kRearRightTurningCanId = 5;
+  
+
+
+
+    public static final double kHeadingP = 0.012;
     public static final double kHeadingI = 0.0;
-    public static final double kHeadingD = 0.0;
+    public static final double kHeadingD = 0.001;
 
     // navX yaw direction (false = normal)
     public static final boolean kGyroReversed = false;

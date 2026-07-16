@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Commands.DriveHeadingLockedCommand;
 import frc.robot.Commands.Intake;
 import frc.robot.Commands.Outtake;
 import frc.robot.Commands.Shooting;
@@ -102,6 +103,7 @@ public class RobotContainer {
                                                 -MathUtil.applyDeadband(m_driverController.getLeftX(),
                                                                 OperatorConstants.kDriveDeadband)),
                                 m_robotDrive));
+
         
 
         registerNamedCommands();
@@ -139,6 +141,11 @@ public class RobotContainer {
                 m_driverController.start().onTrue(new InstantCommand(
                                 () -> m_robotDrive.zeroHeading(),
                                 m_robotDrive));
+                 
+               m_driverController.rightBumper().whileTrue(
+                        new DriveHeadingLockedCommand(m_robotDrive, m_driverController)
+                        );
+
 
                 
 
