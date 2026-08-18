@@ -68,6 +68,15 @@ public final class Constants {
     public static final boolean kGyroReversed = false;
   }
 
+  public static final class VisionAlignConstants {
+    public static final double HEADING_KP = 0.02;
+    public static final double HEADING_KI = 0.0;
+    public static final double HEADING_KD = 0.001;
+
+    public static final double TX_TOLERANCE_DEGREES = 1.0;
+    public static final double MAX_HEADING_CORRECTION_OUTPUT = 0.5;
+  }
+
   
 
   private static Pose2d makeTarget(double x, double y) {

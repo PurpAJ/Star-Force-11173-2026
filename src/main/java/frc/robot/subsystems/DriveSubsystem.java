@@ -163,7 +163,7 @@ SmartDashboard.putNumber("LL ty", NetworkTableInstance.getDefault()
   // Limelight helpers
   // -------------------------
 // Returns true if Limelight sees a target
-private boolean limelightHasTarget() {
+public boolean limelightHasTarget() {
     return NetworkTableInstance.getDefault()
         .getTable("limelight")
         .getEntry("tv")
@@ -171,7 +171,7 @@ private boolean limelightHasTarget() {
 }
 
 // Returns horizontal offset (tx)
-private double getLimelightTx() {
+public double getLimelightTx() {
     return NetworkTableInstance.getDefault()
         .getTable("limelight")
         .getEntry("tx")

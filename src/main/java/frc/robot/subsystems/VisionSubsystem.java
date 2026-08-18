@@ -10,8 +10,10 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.LimelightHelpers.PoseEstimate;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class VisionSubsystem {
+
+public class VisionSubsystem extends SubsystemBase {
 
   public record VisionMeasurement (boolean isReal, PoseEstimate presence, Matrix<N3, N1> trust) {};
 
@@ -45,5 +47,8 @@ public class VisionSubsystem {
     Matrix<N3, N1> trust = VecBuilder.fill(xyStdDev, xyStdDev, 999999);
     return new VisionMeasurement(isReal, mt2, trust);
   }
+  
+
+
   
 }
