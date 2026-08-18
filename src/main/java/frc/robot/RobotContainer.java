@@ -146,7 +146,17 @@ public class RobotContainer {
                         new DriveHeadingLockedCommand(m_robotDrive, m_driverController)
                         );
 
+                operatorController.x().whileTrue(
+                        new DriveHeadingLockedCommand(m_robotDrive, m_driverController)
+                        );
 
+                operatorController.b().whileTrue(new RunCommand(
+                                () -> m_robotDrive.driveTargetAligned(
+                                                -MathUtil.applyDeadband(m_driverController.getLeftY(),
+                                                                OperatorConstants.kDriveDeadband),
+                                                -MathUtil.applyDeadband(m_driverController.getLeftX(),
+                                                                OperatorConstants.kDriveDeadband)),
+                                m_robotDrive));
                 
 
                 operatorController.leftTrigger().whileTrue(new Intake(m_Intake, m_Feeder));

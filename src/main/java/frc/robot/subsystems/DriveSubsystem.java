@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.Targets;
 import frc.robot.Constants.AimMode;
-import frc.robot.subsystems.Vision.VisionMeasurement;
+import frc.robot.subsystems.VisionSubsystem.VisionMeasurement;
 
 import edu.wpi.first.math.MathUtil;
 
@@ -60,7 +60,7 @@ public class DriveSubsystem extends SubsystemBase {
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(NavXComType.kMXP_SPI);
 
-  private final Vision m_vision = new Vision("limelight");
+  private final VisionSubsystem m_vision = new VisionSubsystem("limelight");
 
   private final PIDController m_headingPID = new PIDController(
       DriveConstants.kHeadingP, DriveConstants.kHeadingI, DriveConstants.kHeadingD);
@@ -117,9 +117,11 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
         });
 
-    SmartDashboard.putNumber("test", m_frontLeft.getPosition().distanceMeters);
 
-    SmartDashboard.putNumber("LL tv", NetworkTableInstance.getDefault()
+  SmartDashboard.putNumber("test", m_frontLeft.getPosition().distanceMeters);
+  SmartDashboard.putNumber("LL tx", NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0));
+
+  SmartDashboard.putNumber("LL tv", NetworkTableInstance.getDefault()
     .getTable("limelight")
     .getEntry("tv")
     .getDouble(-1));
@@ -133,6 +135,8 @@ SmartDashboard.putNumber("LL ty", NetworkTableInstance.getDefault()
     .getTable("limelight")
     .getEntry("ty")
     .getDouble(999));
+
+  
 
     SmartDashboard.putString("LL Keys", 
     NetworkTableInstance.getDefault().getTable("limelight").getKeys().toString());
