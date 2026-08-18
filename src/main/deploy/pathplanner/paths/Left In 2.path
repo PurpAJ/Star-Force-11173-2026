@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.822887323943663,
-        "y": 7.308503521126761
+        "x": 6.907066189624329,
+        "y": 6.9312343470483
       },
       "isLocked": false,
       "linkedName": "tarik"
@@ -37,13 +37,13 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.6454352441613588,
-      "maxWaypointRelativePos": 0.18683651804670914,
+      "minWaypointRelativePos": 0.4452380952380952,
+      "maxWaypointRelativePos": 0,
       "constraints": {
-        "maxVelocity": 1.0,
+        "maxVelocity": 3.0,
         "maxAcceleration": 3.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
+        "maxAngularVelocity": 800.0,
+        "maxAngularAcceleration": 800.0,
         "nominalVoltage": 12.0,
         "unlimited": false
       }
