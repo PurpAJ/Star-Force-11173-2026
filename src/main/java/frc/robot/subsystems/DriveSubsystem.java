@@ -74,9 +74,9 @@ public class DriveSubsystem extends SubsystemBase {
   // -------------------------
   private double m_lockedHeading = 0.0;
   private boolean m_headingLocked = false;
-  private final PIDController headingLockPID = new PIDController(0.1, 0.0, 0.002);
+  private final PIDController headingLockPID = new PIDController(0.06, 0.0, 0.001);
 
-  private static final double kTxReacquireTolerance = 3.0;
+  private static final double kTxReacquireTolerance = 8.0;
 
   private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
       DriveConstants.kDriveKinematics,
@@ -101,7 +101,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   private double getGyroAngle() {
-    return -m_gyro.getAngle() % 360;
+    return -m_gyro.getAngle();
   }
 
   @Override
@@ -328,6 +328,10 @@ private double[] getLimelightBotPose() {
     }
     // If no target, keep last locked heading
   }
+  public void resetHeadingLock() {
+    m_headingLocked = false;
+    m_lockedHeading = getGyroAngle();
+}
 
   private double calculateHeadingLockOmega(double currentYaw, double lockedHeading) {
     double error = MathUtil.inputModulus(lockedHeading - currentYaw, -180, 180);
