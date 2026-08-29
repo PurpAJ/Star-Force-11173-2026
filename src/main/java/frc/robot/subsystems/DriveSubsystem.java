@@ -65,18 +65,21 @@ public class DriveSubsystem extends SubsystemBase {
   private final PIDController m_headingPID = new PIDController(
       DriveConstants.kHeadingP, DriveConstants.kHeadingI, DriveConstants.kHeadingD);
 
+ 
+
   private double m_targetDist = 0.0;
   private AimMode m_aimMode = AimMode.HUB;
   private Pose2d m_aimTarget = Pose2d.kZero;
+
 
   // -------------------------
   // 🔒 Heading Lock State
   // -------------------------
   private double m_lockedHeading = 0.0;
   private boolean m_headingLocked = false;
-  private final PIDController headingLockPID = new PIDController(0.06, 0.0, 0.001);
+  private final PIDController headingLockPID = new PIDController(0.005, 0.0, 0.0);
 
-  private static final double kTxReacquireTolerance = 8.0;
+  private static final double kTxReacquireTolerance = 6.0;
 
   private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
       DriveConstants.kDriveKinematics,
@@ -334,7 +337,7 @@ private double[] getLimelightBotPose() {
 }
 
   private double calculateHeadingLockOmega(double currentYaw, double lockedHeading) {
-    double error = MathUtil.inputModulus(lockedHeading - currentYaw, -180, 180);
+    double error = MathUtil.inputModulus(lockedHeading - currentYaw, 0, 360);
     double omega = headingLockPID.calculate(error, 0);
     omega = MathUtil.clamp(omega, -2.5, 2.5);
     return omega;
@@ -394,6 +397,7 @@ private double[] getLimelightBotPose() {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
+    
   }
 
   public void setX() {

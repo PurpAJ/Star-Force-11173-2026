@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public final class Constants {
 
@@ -65,7 +66,7 @@ public final class Constants {
     public static final double kHeadingD = 0.001;
 
     // navX yaw direction (false = normal)
-    public static final boolean kGyroReversed = false;
+    public static final boolean kGyroReversed = true;
   }
 
   public static final class VisionAlignConstants {
@@ -77,8 +78,7 @@ public final class Constants {
     public static final double MAX_HEADING_CORRECTION_OUTPUT = 0.5;
   }
 
-  
-
+ 
   private static Pose2d makeTarget(double x, double y) {
     return new Pose2d(new Translation2d(x, y), Rotation2d.kZero);
   }

@@ -31,6 +31,8 @@ public class DriveHeadingLockedCommand extends Command {
         double ySpeed = MathUtil.applyDeadband(controller.getLeftX(), OperatorConstants.kDriveDeadband);
 
         driveSubsystem.driveHeadingLocked(xSpeed, ySpeed);
+
+        
     }
 
     @Override

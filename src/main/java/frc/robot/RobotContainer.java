@@ -67,6 +67,8 @@ public class RobotContainer {
         CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
         private final CommandXboxController operatorController = new CommandXboxController(
                         OperatorConstants.kOperatorControllerPort);
+        
+        CommandXboxController demoController = new CommandXboxController(3);
         //CommandXboxController m_AbsoluController = new CommandXboxController(OperatorConstants.kAbsoluteControllerPort);
 
         /**
@@ -99,7 +101,7 @@ public class RobotContainer {
                                                 m_robotDrive));
                                                 
                 m_driverController.leftTrigger(0.25).whileTrue(new RunCommand(
-                                () -> m_robotDrive.driveHeadingLocked(
+                                () -> m_robotDrive.driveTargetAligned(
                                                 -MathUtil.applyDeadband(m_driverController.getLeftY(),
                                                                 OperatorConstants.kDriveDeadband),
                                                 -MathUtil.applyDeadband(m_driverController.getLeftX(),
@@ -144,7 +146,7 @@ public class RobotContainer {
                                 () -> m_robotDrive.zeroHeading(),
                                 m_robotDrive));
                  
-m_driverController.rightBumper().whileTrue(
+m_driverController.x().whileTrue(
     new DriveHeadingLockedCommand(m_robotDrive, m_driverController)
 );
 
@@ -154,13 +156,8 @@ m_driverController.rightBumper().whileTrue(
 
 
 
-                operatorController.b().whileTrue(new RunCommand(
-                                () -> m_robotDrive.driveTargetAligned(
-                                                -MathUtil.applyDeadband(m_driverController.getLeftY(),
-                                                                OperatorConstants.kDriveDeadband),
-                                                -MathUtil.applyDeadband(m_driverController.getLeftX(),
-                                                                OperatorConstants.kDriveDeadband)),
-                                m_robotDrive));
+
+
                 
 
                 operatorController.leftTrigger().whileTrue(new Intake(m_Intake, m_Feeder));
@@ -174,6 +171,11 @@ m_driverController.rightBumper().whileTrue(
                                 .andThen(new Shooting(m_Intake, m_Feeder, IntakeConstants.kShootTowerVelocity))); // shooting
                 m_Intake.setDefaultCommand(new RunCommand(() -> m_Intake.setIntakeMotors(0), m_Intake));
                 m_Feeder.setDefaultCommand(new RunCommand(() -> m_Feeder.setFeederMotors(0), m_Feeder));
+
+                demoController.leftTrigger().whileTrue(new Intake(m_Intake, m_Feeder));
+                demoController.rightTrigger().whileTrue(new SpinUp(m_Intake, IntakeConstants.kShootTowerVelocity)
+                                .andThen(new Shooting(m_Intake, m_Feeder, IntakeConstants.kShootTowerVelocity)));
+
                 
         }
 
